@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(
     SRC
     "src/main.cpp"
+    "src/shader.cpp"
 )
 
 FetchContent_Declare(
