@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define ERR_BUF_LEN (1024)
 
@@ -76,7 +77,7 @@ double atand(double angle) {
 
 
 orbit_params_t apply_time(orbit_params_t orbit, orbit_params_t rates, double time) {
-    double centuries = (time - J2000) / 36500.;
+    double centuries = (time - J2000) / 36525.;
     return (orbit_params_t){
         .planet = orbit.planet,
         .semi_major_axis = orbit.semi_major_axis + rates.semi_major_axis * centuries,
@@ -176,6 +177,12 @@ void draw_planet(cairo_t *cr, orbit_params_t o_orbit, orbit_params_t rates, doub
     cairo_restore(cr);
 }
 
+static double julian_date(time_t time) {
+    double days = (double)time / 86400.;
+    static const double unix_epoch_julian = 2440588.;
+    return unix_epoch_julian + days;
+}
+
 void draw_orbit(cairo_t *cr, orbit_params_t orbit) {
     cairo_save(cr);
 
@@ -205,6 +212,9 @@ void draw_orbit(cairo_t *cr, orbit_params_t orbit) {
 }
 
 int main(int argc, char *argv[]) {
+    time_t timer = time(NULL);
+    double time = julian_date(timer);
+
     Display *dsp = XOpenDisplay(NULL);
     if(dsp == NULL) {
         fputs("Failed to open X11 display", stderr);
@@ -232,46 +242,49 @@ int main(int argc, char *argv[]) {
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_BEST);
     cairo_scale(cr, attribs.height, attribs.height);
     
-    double time = 2460105;
     cairo_save(cr);
-    cairo_set_source_rgb(cr, 0.071, 0.071, 0.078);
-    cairo_paint(cr);
 
-    cairo_set_source_rgb(cr, 1, 0.957, 0.918);
-    cairo_translate(cr, 0.5 * ratio, 0.5);
-    cairo_arc(cr, 0., 0., 0.045, 0., M_PI * 2.);
-    cairo_fill(cr);
+    cairo_translate(cr, 0.5 * ratio, 0.52);
     
     orbit_params_t mercury = apply_time(MERCURY, MERCURY_R, time);
     orbit_params_t venus = apply_time(VENUS, VENUS_R, time);
     orbit_params_t earth = apply_time(EARTH, EARTH_R, time);
     orbit_params_t mars = apply_time(MARS, MARS_R, time);
-     
-    cairo_save(cr);
-
+    
     cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
     cairo_scale(cr, 0.3, 0.3);
-
     cairo_matrix_t x_reflection_matrix;
     cairo_get_matrix(cr, &x_reflection_matrix);
     x_reflection_matrix.yy *= -1.0;
     cairo_set_matrix(cr, &x_reflection_matrix);
 
+    
+    cairo_save(cr);
+
+    cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+    
     draw_orbit(cr, mercury);
-    draw_planet(cr, MERCURY, MERCURY_R, time);
-
     draw_orbit(cr, venus);
-    draw_planet(cr, VENUS, VENUS_R, time);
-
     draw_orbit(cr, earth);
-    draw_planet(cr, EARTH, EARTH_R, time);
-
     draw_orbit(cr, mars);
-    draw_planet(cr, MARS, MARS_R, time);
 
+    cairo_set_source_rgb(cr, 1, 0.957, 0.918);
+    cairo_arc(cr, 0., 0., 0.00465047e+1 * 4., 0., M_PI * 2.);
+    cairo_fill(cr);
+
+    cairo_set_source_rgba(cr, 0.071, 0.071, 0.078, 1.);
+    cairo_set_operator(cr, CAIRO_OPERATOR_ADD);
+    cairo_paint(cr);
 
     cairo_restore(cr);
 
+
+    draw_planet(cr, MERCURY, MERCURY_R, time);
+    draw_planet(cr, VENUS, VENUS_R, time);
+    draw_planet(cr, EARTH, EARTH_R, time);
+    draw_planet(cr, MARS, MARS_R, time);
+
+    
     cairo_surface_flush(surface);
 
     XSetWindowBackgroundPixmap(dsp, win, pxmap);
