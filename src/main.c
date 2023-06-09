@@ -120,7 +120,36 @@ void cairo_planet_circle(cairo_t *cr, planet_kind_t planet) {
     }
 
 
-    cairo_arc(cr, 0., 0., radius, 0., M_PI * 2.);
+    //cairo_arc(cr, 0., 0., radius, 0., M_PI * 2.);
+
+    cairo_set_source_rgba(cr, 0., 0., 0., 1.);
+    double a1 = 20. * DEGRAD;
+    double a2 = 160. * DEGRAD;
+        
+    double y = radius * sin(a1);
+    double x = radius * cos(a1);
+    
+    cairo_save(cr);
+
+        cairo_set_line_width(cr, 0.03);
+        cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT);
+        cairo_arc_negative(cr, 0., 0., radius, a1, a2);
+        //cairo_stroke(cr);
+
+        cairo_save(cr);
+            cairo_scale(cr, 1., 0.401);
+            cairo_arc_negative(cr, 0., y / 0.4, fabs(x), 0., M_PI);
+        cairo_restore(cr);
+
+        cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
+        cairo_close_path(cr);
+
+    cairo_restore(cr);
+    //cairo_close_path(cr);
+    
+    cairo_fill_preserve(cr);
+    cairo_set_line_width(cr, 0.003);
+    cairo_stroke(cr);
 }
 
 void draw_planet(cairo_t *cr, orbit_params_t o_orbit, orbit_params_t rates, double time) {
@@ -171,8 +200,8 @@ void draw_planet(cairo_t *cr, orbit_params_t o_orbit, orbit_params_t rates, doub
 
     cairo_rotate(cr, -(orbit.long_ascending) * DEGRAD);
     cairo_translate(cr, x_ecl, y_ecl);
+    cairo_rotate(cr, (orbit.long_ascending) * DEGRAD);
     cairo_planet_circle(cr, orbit.planet);
-    cairo_fill(cr);
 
     cairo_restore(cr);
 }
@@ -268,13 +297,36 @@ int main(int argc, char *argv[]) {
     draw_orbit(cr, earth);
     draw_orbit(cr, mars);
 
-    cairo_set_source_rgb(cr, 1, 0.957, 0.918);
-    cairo_arc(cr, 0., 0., 0.00465047e+1 * 4., 0., M_PI * 2.);
-    cairo_fill(cr);
-
     cairo_set_source_rgba(cr, 0.071, 0.071, 0.078, 1.);
     cairo_set_operator(cr, CAIRO_OPERATOR_ADD);
     cairo_paint(cr);
+
+    cairo_restore(cr);
+
+    cairo_set_source_rgb(cr, 1, 0.957, 0.918);
+    double rad = 0.00465047e+1 * 4.;
+    double a1 = 20. * DEGRAD;
+    double a2 = 160. * DEGRAD;
+        
+    double y = rad * sin(a1);
+    double x = rad * cos(a1);
+    
+    cairo_save(cr);
+
+    cairo_set_line_width(cr, 0.03);
+    cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT);
+    cairo_arc_negative(cr, 0., 0., rad, a1, a2);
+    cairo_stroke(cr);
+
+    cairo_save(cr);
+    cairo_scale(cr, 1., 0.401);
+
+
+    cairo_arc_negative(cr, 0., y / 0.4, fabs(x), 0., M_PI);
+    cairo_restore(cr);
+
+    cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
+    cairo_stroke(cr);
 
     cairo_restore(cr);
 
