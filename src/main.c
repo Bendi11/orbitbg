@@ -142,7 +142,6 @@ void draw_planet(cairo_t *cr, orbit_params_t o_orbit, orbit_params_t rates, doub
 
     orbit_params_t orbit = apply_time(o_orbit, rates, time);
     
-    double arg_perhelion = orbit.long_perhelion - orbit.long_ascending;
     double mean_anomaly = orbit.mean_long - orbit.long_perhelion;
     mean_anomaly = fmod(mean_anomaly, 360.f);
     
