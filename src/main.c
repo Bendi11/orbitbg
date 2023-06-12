@@ -118,38 +118,21 @@ void cairo_planet_circle(cairo_t *cr, planet_kind_t planet) {
             radius = 0.03;
         } break;
     }
-
-
-    //cairo_arc(cr, 0., 0., radius, 0., M_PI * 2.);
-
-    cairo_set_source_rgba(cr, 0., 0., 0., 1.);
-    double a1 = 20. * DEGRAD;
-    double a2 = 160. * DEGRAD;
-        
-    double y = radius * sin(a1);
-    double x = radius * cos(a1);
+    cairo_save(cr);
+        cairo_arc(cr, 0., 0., radius, 0., M_PI * 2.);
+        cairo_fill(cr);
+        cairo_set_source_rgba(cr, 0., 0., 0., 0.5);
+        cairo_arc(cr, 0., 0., radius, M_PI, M_PI * 2.);    
+        cairo_fill(cr);
+    cairo_restore(cr);
     
     cairo_save(cr);
-
-        cairo_set_line_width(cr, 0.03);
-        cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT);
-        cairo_arc_negative(cr, 0., 0., radius, a1, a2);
-        //cairo_stroke(cr);
-
-        cairo_save(cr);
-            cairo_scale(cr, 1., 0.401);
-            cairo_arc_negative(cr, 0., y / 0.4, fabs(x), 0., M_PI);
-        cairo_restore(cr);
-
-        cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
-        cairo_close_path(cr);
-
+        cairo_arc(cr, 0., 0., radius, 0., M_PI);
+        cairo_fill(cr);
+        cairo_scale(cr, 1., 0.5);
+        cairo_arc_negative(cr, 0., 0., radius, 0., M_PI);
+        cairo_fill(cr);
     cairo_restore(cr);
-    //cairo_close_path(cr);
-    
-    cairo_fill_preserve(cr);
-    cairo_set_line_width(cr, 0.003);
-    cairo_stroke(cr);
 }
 
 void draw_planet(cairo_t *cr, orbit_params_t o_orbit, orbit_params_t rates, double time) {
@@ -191,16 +174,18 @@ void draw_planet(cairo_t *cr, orbit_params_t o_orbit, orbit_params_t rates, doub
     double x_eq = x_ecl;
     double y_eq = cosd(23.43928) * y_ecl - sind(23.43928) * z_ecl;
     
-    double ang = acosd((cosd(eccentric_anomaly) - orbit.eccentricity) / (1. - orbit.eccentricity * cosd(eccentric_anomaly)));
-    double r = orbit.semi_major_axis * ((1. - orbit.eccentricity * orbit.eccentricity) / (1. + orbit.eccentricity * cosd(ang)));
+    x = cosd(-orbit.long_ascending) * x_ecl - sind(-orbit.long_ascending) * y_ecl;
+    y = sind(-orbit.long_ascending) * x_ecl + cosd(-orbit.long_ascending) * y_ecl;
 
-    double focus = (orbit.semi_major_axis * orbit.eccentricity);
+    double angle = atan2(y, x);
+    printf("(%f, %f): angle to sun: %f\n", x, y, angle * RADEG);
     
     cairo_save(cr);
 
     cairo_rotate(cr, -(orbit.long_ascending) * DEGRAD);
     cairo_translate(cr, x_ecl, y_ecl);
     cairo_rotate(cr, (orbit.long_ascending) * DEGRAD);
+    cairo_rotate(cr, -((M_PI - (angle + M_PI_2)) + M_PI_2) - M_PI_2);
     cairo_planet_circle(cr, orbit.planet);
 
     cairo_restore(cr);
@@ -303,30 +288,12 @@ int main(int argc, char *argv[]) {
 
     cairo_restore(cr);
 
-    cairo_set_source_rgb(cr, 1, 0.957, 0.918);
-    double rad = 0.00465047e+1 * 4.;
-    double a1 = 20. * DEGRAD;
-    double a2 = 160. * DEGRAD;
-        
-    double y = rad * sin(a1);
-    double x = rad * cos(a1);
+
+    cairo_save(cr);
     
-    cairo_save(cr);
-
-    cairo_set_line_width(cr, 0.03);
-    cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT);
-    cairo_arc_negative(cr, 0., 0., rad, a1, a2);
-    cairo_stroke(cr);
-
-    cairo_save(cr);
-    cairo_scale(cr, 1., 0.401);
-
-
-    cairo_arc_negative(cr, 0., y / 0.4, fabs(x), 0., M_PI);
-    cairo_restore(cr);
-
-    cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
-    cairo_stroke(cr);
+    cairo_set_source_rgb(cr, 1, 0.957, 0.918);
+    cairo_arc(cr, 0., 0., 0.00465047e+1 * 4., 0., M_PI * 2.);
+    cairo_fill(cr);
 
     cairo_restore(cr);
 
