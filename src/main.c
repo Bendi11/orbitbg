@@ -94,7 +94,8 @@ void cairo_planet_circle(cairo_t *cr, planet_kind_t planet) {
 
     switch(planet) {
         case P_EARTH: {
-            cairo_set_source_rgba(cr, 0.463, 0.714, 0.769, 1.);
+            //cairo_set_source_rgba(cr, 0.463, 0.714, 0.769, 1.);
+            cairo_set_source_rgba(cr, 0.231, 0.541, 0.769, 1.);
             radius = 4.26352e-2;
         } break;
 
@@ -109,7 +110,8 @@ void cairo_planet_circle(cairo_t *cr, planet_kind_t planet) {
         } break;
 
         case P_MARS: {
-            cairo_set_source_rgba(cr, 0.949, 0.471, 0.263, 1.);
+            //cairo_set_source_rgba(cr, 0.949, 0.471, 0.263, 1.);
+            cairo_set_source_rgba(cr, 0.678, 0.384, 0.259, 1.);
             radius = 2.26608e-2;
         } break;
 
@@ -171,21 +173,17 @@ void draw_planet(cairo_t *cr, orbit_params_t o_orbit, orbit_params_t rates, doub
 
     double z_ecl = (s_w * s_i) * x + (c_w * s_i) * y;
 
-    double x_eq = x_ecl;
-    double y_eq = cosd(23.43928) * y_ecl - sind(23.43928) * z_ecl;
-    
     x = cosd(-orbit.long_ascending) * x_ecl - sind(-orbit.long_ascending) * y_ecl;
     y = sind(-orbit.long_ascending) * x_ecl + cosd(-orbit.long_ascending) * y_ecl;
 
-    double angle = atan2(y, x);
-    printf("(%f, %f): angle to sun: %f\n", x, y, angle * RADEG);
+    double angle = M_PI - atan2(y, x);
     
     cairo_save(cr);
 
     cairo_rotate(cr, -(orbit.long_ascending) * DEGRAD);
     cairo_translate(cr, x_ecl, y_ecl);
     cairo_rotate(cr, (orbit.long_ascending) * DEGRAD);
-    cairo_rotate(cr, -((M_PI - (angle + M_PI_2)) + M_PI_2) - M_PI_2);
+    cairo_rotate(cr, -(angle + M_PI_2));
     cairo_planet_circle(cr, orbit.planet);
 
     cairo_restore(cr);
@@ -275,8 +273,6 @@ int main(int argc, char *argv[]) {
     
     cairo_save(cr);
 
-    cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-    
     draw_orbit(cr, mercury);
     draw_orbit(cr, venus);
     draw_orbit(cr, earth);
@@ -287,7 +283,6 @@ int main(int argc, char *argv[]) {
     cairo_paint(cr);
 
     cairo_restore(cr);
-
 
     cairo_save(cr);
     
