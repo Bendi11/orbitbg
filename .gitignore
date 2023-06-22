@@ -1,2 +1,4 @@
 /.cache
 /build
+/pkg
+*.pkg.tar.zst

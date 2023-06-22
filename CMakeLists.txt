@@ -34,3 +34,5 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE BUILD_TYPE="${CMAKE_BUILD_TYP
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CAIRO_INCLUDE_DIRS} ${X11_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CAIRO_LIBRARIES} ${X11_LIBRARIES} m)
+
+install(TARGETS ${PROJECT_NAME})

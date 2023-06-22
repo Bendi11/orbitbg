@@ -5,12 +5,12 @@
 
 void planet_render(cairo_t *cr, const planet_t *planet, orbit_params_t orbit) {
     cairo_save(cr);
-        translate_to_planet_orbit(cr, orbit);
-        cairo_planet_circle(cr, planet);
+        planet_translate_to_orbit(cr, orbit);
+        planet_draw_circle(cr, planet);
     cairo_restore(cr);
 }
 
-void cairo_planet_circle(cairo_t *cr, planet_t const *planet) {
+void planet_draw_circle(cairo_t *cr, planet_t const *planet) {
     double radius = planet->radius_km * KM_TO_AU * 1E+3;
     cairo_set_source_rgba(cr, planet->color.r, planet->color.g, planet->color.b, planet->color.a);
 
@@ -31,7 +31,7 @@ void cairo_planet_circle(cairo_t *cr, planet_t const *planet) {
     cairo_restore(cr);
 }
 
-void translate_to_planet_orbit(cairo_t *cr, orbit_params_t orbit) {
+void planet_translate_to_orbit(cairo_t *cr, orbit_params_t orbit) {
     point_t pos = orbit_position(orbit);
     double angle = M_PI - atan2(pos.y, pos.x);
     
