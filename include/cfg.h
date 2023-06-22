@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gfx.h"
+#include "mmath.h"
 
 typedef struct planet_cfg {
     color_t color;
@@ -10,6 +11,7 @@ typedef struct planet_cfg {
 typedef struct cfg {
     double sun_scale;
     color_t sun_color;
+    point_t sun_pos;
     double planet_scale;
     color_t background_color;
     color_t orbit_line_color;
@@ -25,6 +27,7 @@ static const struct cfg DEFAULT_CONFIG = {
     .sun_scale = 40.,
     /** Primary color that the sun emits according to its spectral class */
     .sun_color = (color_t){1., 0.957, 0.918, 1.},
+    .sun_pos = (point_t){0.5, 0.52},
     .planet_scale = 1E+3,
     .background_color = (color_t){0.071, 0.071, 0.078, 1.},
     .orbit_line_color = (color_t){1., 1., 1., 0.14},

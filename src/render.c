@@ -14,7 +14,7 @@ void planet_draw(cairo_t *cr, const planet_t *planet, const planet_cfg_t *render
 
 void planet_draw_circle(cairo_t *cr, planet_t const *planet, planet_cfg_t const *render) {
     double radius = planet->radius_km * KM_TO_AU * PLANET_SCALE;
-    cairo_set_source_rgba(cr, render->color.r, render->color.g, render->color.b, render->color.a);
+    cairo_set_source_rgba(cr, COLOR_EXPAND(render->color));
 
     cairo_save(cr);
         cairo_arc(cr, 0., 0., radius, 0., M_PI * 2.);

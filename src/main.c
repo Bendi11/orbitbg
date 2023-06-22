@@ -25,6 +25,8 @@ int error_handler(Display *dsp, XErrorEvent *ev) {
     return 255;
 }
 
+static void cairo_reflect_y(cairo_t *cr);
+
 int main(int argc, char *argv[]) {
     CONFIG = DEFAULT_CONFIG;
     time_t timer = time(NULL);
@@ -57,14 +59,10 @@ int main(int argc, char *argv[]) {
     
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_BEST);
     cairo_scale(cr, attribs.height, attribs.height);
-    
-    cairo_translate(cr, 0.5 * screen_ratio, 0.52);
-    
+    cairo_translate(cr, CONFIG.sun_pos.x * screen_ratio, CONFIG.sun_pos.y);
+
     cairo_scale(cr, 0.3, 0.3);
-    cairo_matrix_t x_reflection_matrix;
-    cairo_get_matrix(cr, &x_reflection_matrix);
-    x_reflection_matrix.yy *= -1.0;
-    cairo_set_matrix(cr, &x_reflection_matrix);
+    cairo_reflect_y(cr);
 
     orbit_params_t 
         mercury = orbit_params_time(&MERCURY, time),
@@ -99,7 +97,7 @@ int main(int argc, char *argv[]) {
     cairo_restore(cr);
 
     cairo_surface_flush(surface);
-
+    
     XSetWindowBackgroundPixmap(dsp, win, pxmap);
     XClearWindow(dsp, win);
 
@@ -110,4 +108,12 @@ int main(int argc, char *argv[]) {
     XSetCloseDownMode(dsp, RetainTemporary);
 
     return 0;
+}
+
+
+static void cairo_reflect_y(cairo_t *cr) {
+    cairo_matrix_t x_reflection_matrix;
+    cairo_get_matrix(cr, &x_reflection_matrix);
+    x_reflection_matrix.yy *= -1.0;
+    cairo_set_matrix(cr, &x_reflection_matrix);
 }
