@@ -29,3 +29,5 @@ color_parse_err_t color_parse_hex(slice_t txt, color_t *const color, slice_t *pr
 
 /** @brief Get a NULL-terimated character string for the given color parsing error */
 char const* color_parse_err_str(color_parse_err_t err);
+
+#define COLOR_EXPAND(color) (color).r, (color).g, (color).b, (color).a

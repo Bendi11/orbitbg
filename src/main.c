@@ -80,22 +80,22 @@ int main(int argc, char *argv[]) {
         planet_draw_orbit(cr, earth);
         planet_draw_orbit(cr, mars);
 
-        cairo_set_source_rgba(cr, BG_COLOR.r, BG_COLOR.g, BG_COLOR.b, BG_COLOR.a);
+        cairo_set_source_rgba(cr, COLOR_EXPAND(CONFIG.background_color));
         cairo_set_operator(cr, CAIRO_OPERATOR_ADD);
         cairo_paint(cr);
     cairo_restore(cr);
 
     cairo_save(cr);
-        cairo_set_source_rgba(cr, SUN_COLOR.r, SUN_COLOR.g, SUN_COLOR.b, SUN_COLOR.a);
-        cairo_arc(cr, 0., 0., SUN_RADIUS_KM * KM_TO_AU * SUN_SCALE, 0., M_PI * 2.);
+        cairo_set_source_rgba(cr, COLOR_EXPAND(CONFIG.sun_color));
+        cairo_arc(cr, 0., 0., SUN_RADIUS_KM * KM_TO_AU * CONFIG.sun_scale, 0., M_PI * 2.);
         cairo_fill(cr);
     cairo_restore(cr);
     
     cairo_save(cr);
-        planet_draw(cr, &MERCURY, mercury);
-        planet_draw(cr, &VENUS, venus);
-        planet_draw(cr, &EARTH, earth);
-        planet_draw(cr, &MARS, mars);
+        planet_draw(cr, &MERCURY, &CONFIG.mercury, mercury);
+        planet_draw(cr, &VENUS,   &CONFIG.venus,   venus);
+        planet_draw(cr, &EARTH,   &CONFIG.earth,   earth);
+        planet_draw(cr, &MARS,    &CONFIG.mars,    mars);
     cairo_restore(cr);
 
     cairo_surface_flush(surface);

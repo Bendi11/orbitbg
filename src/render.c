@@ -1,19 +1,20 @@
 #include <cairo.h>
 
+#include "cfg.h"
 #include "planet.h"
 #include "render.h"
 #include "consts.h"
 
-void planet_draw(cairo_t *cr, const planet_t *planet, orbit_params_t orbit) {
+void planet_draw(cairo_t *cr, const planet_t *planet, const planet_cfg_t *render, orbit_params_t orbit) {
     cairo_save(cr);
         planet_transform_to_orbit_pos(cr, orbit);
-        planet_draw_circle(cr, planet);
+        planet_draw_circle(cr, planet, render);
     cairo_restore(cr);
 }
 
-void planet_draw_circle(cairo_t *cr, planet_t const *planet) {
+void planet_draw_circle(cairo_t *cr, planet_t const *planet, planet_cfg_t const *render) {
     double radius = planet->radius_km * KM_TO_AU * PLANET_SCALE;
-    cairo_set_source_rgba(cr, planet->color.r, planet->color.g, planet->color.b, planet->color.a);
+    cairo_set_source_rgba(cr, render->color.r, render->color.g, render->color.b, render->color.a);
 
     cairo_save(cr);
         cairo_arc(cr, 0., 0., radius, 0., M_PI * 2.);
@@ -48,7 +49,7 @@ void planet_draw_orbit(cairo_t *cr, orbit_params_t orbit) {
         cairo_rotate(cr, orbit.long_perhelion_deg * DEGRAD);
         cairo_translate(cr, -focus, 0.);
         
-        cairo_set_line_width(cr, 0.005);
+        cairo_set_line_width(cr, CONFIG.orbit_line_width);
         cairo_move_to(cr, 0., 0.);
         cairo_line_to(cr, semi_minor_axis, 0.);
 
@@ -57,8 +58,8 @@ void planet_draw_orbit(cairo_t *cr, orbit_params_t orbit) {
     cairo_restore(cr);
     
     cairo_save(cr);
-        cairo_set_source_rgba(cr, );
-        cairo_set_line_width(cr, .005);
+        cairo_set_source_rgba(cr, COLOR_EXPAND(CONFIG.orbit_line_color));
+        cairo_set_line_width(cr, CONFIG.orbit_line_width);
         cairo_stroke(cr);
     cairo_restore(cr);
 }

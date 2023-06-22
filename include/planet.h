@@ -20,10 +20,8 @@ typedef struct orbit_params {
     double long_ascending_deg;
 } orbit_params_t;
 
-/** Primary container with all data to calculate position and render a planet */
+/** Primary container with all non-configurable data to calculate position and render planets */
 typedef struct planet {
-    // color of the planet
-    color_t color;
     // Radius of the planet in km
     double radius_km;
     // Base orbital parameters
