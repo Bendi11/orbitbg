@@ -18,6 +18,7 @@ set(
     "src/render.c"
     "src/gfx.c"
     "src/orbit.c"
+    "src/cfg.c"
 )
 
 find_package(Cairo REQUIRED)

@@ -1,4 +1,5 @@
 #include "planet.h"
+#include "consts.h"
 #include "mmath.h"
 
 static const double SECONDS_PER_DAY = 86400.;
@@ -8,7 +9,6 @@ double julian_time(time_t time) {
     double days = (double)time / SECONDS_PER_DAY;
     return UNIX_EPOCH_JULIAN + days;
 }
-
 
 orbit_params_t orbit_params_time(planet_t const *planet, double time_julian) {
     double centuries = (time_julian - J2000) / DAYS_PER_CENTURY;

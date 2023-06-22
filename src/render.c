@@ -2,16 +2,17 @@
 
 #include "planet.h"
 #include "render.h"
+#include "consts.h"
 
-void planet_render(cairo_t *cr, const planet_t *planet, orbit_params_t orbit) {
+void planet_draw(cairo_t *cr, const planet_t *planet, orbit_params_t orbit) {
     cairo_save(cr);
-        planet_translate_to_orbit(cr, orbit);
+        planet_transform_to_orbit_pos(cr, orbit);
         planet_draw_circle(cr, planet);
     cairo_restore(cr);
 }
 
 void planet_draw_circle(cairo_t *cr, planet_t const *planet) {
-    double radius = planet->radius_km * KM_TO_AU * 1E+3;
+    double radius = planet->radius_km * KM_TO_AU * PLANET_SCALE;
     cairo_set_source_rgba(cr, planet->color.r, planet->color.g, planet->color.b, planet->color.a);
 
     cairo_save(cr);
@@ -31,7 +32,7 @@ void planet_draw_circle(cairo_t *cr, planet_t const *planet) {
     cairo_restore(cr);
 }
 
-void planet_translate_to_orbit(cairo_t *cr, orbit_params_t orbit) {
+void planet_transform_to_orbit_pos(cairo_t *cr, orbit_params_t orbit) {
     point_t pos = orbit_position(orbit);
     double angle = M_PI - atan2(pos.y, pos.x);
     
@@ -43,7 +44,6 @@ void planet_draw_orbit(cairo_t *cr, orbit_params_t orbit) {
     double semi_minor_axis = orbit.semi_major_axis_au * sqrt(1. - orbit.eccentricity * orbit.eccentricity);
     double focus = (orbit.semi_major_axis_au * orbit.eccentricity);
     
-
     cairo_save(cr);
         cairo_rotate(cr, orbit.long_perhelion_deg * DEGRAD);
         cairo_translate(cr, -focus, 0.);
@@ -57,7 +57,7 @@ void planet_draw_orbit(cairo_t *cr, orbit_params_t orbit) {
     cairo_restore(cr);
     
     cairo_save(cr);
-        cairo_set_source_rgba(cr, 1., 1., 1., 0.14);
+        cairo_set_source_rgba(cr, );
         cairo_set_line_width(cr, .005);
         cairo_stroke(cr);
     cairo_restore(cr);

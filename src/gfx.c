@@ -16,12 +16,12 @@ static color_parse_err_t hex_color_part(slice_t txt, float *v, slice_t *problem)
     uint8_t digit = hex_digit(txt.ptr[0]);
     if(digit > 16) { *problem = txt; return COLOR_ERR_INVALID_HEX_DIGIT; }
 
-    uint8_t val = digit;
+    uint8_t color_value = digit;
     digit = hex_digit(txt.ptr[1]);
     if(digit > 16) { *problem = txt; return COLOR_ERR_INVALID_HEX_DIGIT; }
-    val |= digit << 4;
+    color_value |= digit << 4;
 
-    *v = (float)val / 255.f;
+    *v = (float)color_value / 255.f;
 
     return COLOR_SUCCESS;
 }

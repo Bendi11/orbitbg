@@ -2,15 +2,16 @@
 #include <cairo/cairo.h>
 #include <cairo/cairo-xlib.h>
 #include <X11/Xlib.h>
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
+#include "cfg.h"
 #include "mmath.h"
 #include "planet.h"
 #include "render.h"
+#include "consts.h"
 
 #define ERR_BUF_LEN (1024)
 
@@ -25,6 +26,7 @@ int error_handler(Display *dsp, XErrorEvent *ev) {
 }
 
 int main(int argc, char *argv[]) {
+    CONFIG = DEFAULT_CONFIG;
     time_t timer = time(NULL);
     double time = julian_time(timer);
 
@@ -41,27 +43,23 @@ int main(int argc, char *argv[]) {
     
     XWindowAttributes attribs;
     XGetWindowAttributes(dsp, win, &attribs);
+    double screen_ratio = (double)attribs.width / (double)attribs.height;
     
-    int depth = XDefaultDepthOfScreen(screen);
-    Drawable pxmap = XCreatePixmap(dsp, win, attribs.width, attribs.height, depth);
+    int screen_depth = XDefaultDepthOfScreen(screen);
+    Drawable pxmap = XCreatePixmap(dsp, win, attribs.width, attribs.height, screen_depth);
     XMapWindow(dsp, win);
     
     Visual *display = XDefaultVisualOfScreen(screen);
     cairo_surface_t *surface = cairo_xlib_surface_create(dsp, pxmap, display, attribs.width, attribs.height);
     cairo_xlib_surface_set_size(surface, attribs.width, attribs.height);
-    
-    double ratio = (double)attribs.width / (double)attribs.height;
 
     cairo_t *cr = cairo_create(surface);
     
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_BEST);
     cairo_scale(cr, attribs.height, attribs.height);
     
-    cairo_save(cr);
-
-    cairo_translate(cr, 0.5 * ratio, 0.52);
+    cairo_translate(cr, 0.5 * screen_ratio, 0.52);
     
-    cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
     cairo_scale(cr, 0.3, 0.3);
     cairo_matrix_t x_reflection_matrix;
     cairo_get_matrix(cr, &x_reflection_matrix);
@@ -75,27 +73,31 @@ int main(int argc, char *argv[]) {
         mars = orbit_params_time(&MARS, time);
     
     cairo_save(cr);
+        cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
+
         planet_draw_orbit(cr, mercury);
         planet_draw_orbit(cr, venus);
         planet_draw_orbit(cr, earth);
         planet_draw_orbit(cr, mars);
 
-        cairo_set_source_rgba(cr, 0.071, 0.071, 0.078, 1.);
+        cairo_set_source_rgba(cr, BG_COLOR.r, BG_COLOR.g, BG_COLOR.b, BG_COLOR.a);
         cairo_set_operator(cr, CAIRO_OPERATOR_ADD);
         cairo_paint(cr);
     cairo_restore(cr);
 
     cairo_save(cr);
-    
-    cairo_set_source_rgb(cr, 1, 0.957, 0.918);
-    cairo_arc(cr, 0., 0., 0.00465047e+1 * 4., 0., M_PI * 2.);
-    cairo_fill(cr);
-
+        cairo_set_source_rgba(cr, SUN_COLOR.r, SUN_COLOR.g, SUN_COLOR.b, SUN_COLOR.a);
+        cairo_arc(cr, 0., 0., SUN_RADIUS_KM * KM_TO_AU * SUN_SCALE, 0., M_PI * 2.);
+        cairo_fill(cr);
     cairo_restore(cr);
-        planet_render(cr, &MERCURY, mercury);
-        planet_render(cr, &VENUS, venus);
-        planet_render(cr, &EARTH, earth);
-        planet_render(cr, &MARS, mars);
+    
+    cairo_save(cr);
+        planet_draw(cr, &MERCURY, mercury);
+        planet_draw(cr, &VENUS, venus);
+        planet_draw(cr, &EARTH, earth);
+        planet_draw(cr, &MARS, mars);
+    cairo_restore(cr);
+
     cairo_surface_flush(surface);
 
     XSetWindowBackgroundPixmap(dsp, win, pxmap);
