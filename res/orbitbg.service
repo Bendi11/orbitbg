@@ -1,0 +1,7 @@
+[Unit]
+Description=Dynamic solar system X11 wallpaper
+Requires=xdg-desktop-autostart.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/orbitbg

@@ -5,6 +5,8 @@ project(
     LANGUAGES C
 )
 
+include(GNUInstallDirs)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 set(CMAKE_C_STANDARD 11)
@@ -36,3 +38,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CAIRO_INCLUDE_DIRS} ${X11_I
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CAIRO_LIBRARIES} ${X11_LIBRARIES} m)
 
 install(TARGETS ${PROJECT_NAME})
+install(
+    FILES res/orbitbg.service res/orbitbg.timer
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/systemd/user"
+)
