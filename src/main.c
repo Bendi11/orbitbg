@@ -21,17 +21,19 @@ int error_handler(Display *dsp, XErrorEvent *ev) {
     fputs(errbuf, stderr);
 
     XCloseDisplay(dsp);
-    return -1;
+    return 255;
 }
 
 int main(int argc, char *argv[]) {
     time_t timer = time(NULL);
     double time = julian_time(timer);
 
+    XSetErrorHandler(error_handler);
+
     Display *dsp = XOpenDisplay(NULL);
     if(dsp == NULL) {
         fputs("Failed to open X11 display", stderr);
-        exit(-1);
+        exit(255);
     }
     
     Screen *screen = XDefaultScreenOfDisplay(dsp);
@@ -104,5 +106,6 @@ int main(int argc, char *argv[]) {
 
     XKillClient(dsp, AllTemporary);
     XSetCloseDownMode(dsp, RetainTemporary);
-}
 
+    return 0;
+}

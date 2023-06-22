@@ -1,11 +1,8 @@
 [Unit]
 Description=Update dynamic solar system wallpaper daily
-Requires=xdg-desktop-autostart.target
 
 [Timer]
-OnBootSec=0sec
-OnCalendar=daily
-Persistent=true
+OnUnitActiveSec=1day
 
 [Install]
 WantedBy=timers.target
