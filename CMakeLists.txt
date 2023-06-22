@@ -13,6 +13,9 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(
     SRC
     "src/main.c"
+    "src/render.c"
+    "src/gfx.c"
+    "src/orbit.c"
 )
 
 find_package(Cairo REQUIRED)
