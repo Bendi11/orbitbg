@@ -13,6 +13,9 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(
     SRC
     "src/main.c"
+    "src/render.c"
+    "src/gfx.c"
+    "src/orbit.c"
 )
 
 find_package(Cairo REQUIRED)
@@ -31,3 +34,5 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE BUILD_TYPE="${CMAKE_BUILD_TYP
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CAIRO_INCLUDE_DIRS} ${X11_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CAIRO_LIBRARIES} ${X11_LIBRARIES} m)
+
+install(TARGETS ${PROJECT_NAME})
