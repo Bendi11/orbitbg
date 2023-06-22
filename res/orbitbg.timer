@@ -1,0 +1,8 @@
+[Unit]
+Description=Update dynamic solar system wallpaper daily
+
+[Timer]
+OnUnitActiveSec=1day
+
+[Install]
+WantedBy=timers.target

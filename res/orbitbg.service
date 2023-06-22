@@ -1,0 +1,6 @@
+[Unit]
+Description=Dynamic solar system X11 wallpaper
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/orbitbg
