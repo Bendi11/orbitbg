@@ -5,25 +5,25 @@
 /** Parameters used to calculate a planet's orbit */
 typedef struct orbit_params {
     // Length of the semi-major axis in au
-    double semi_major_axis;
+    double semi_major_axis_au;
     // Eccentricity of the planet's orbit (unitless)
     double eccentricity;
     // Inclination of the orbit in radians
-    double inclination;
+    double inclination_rad;
     // Mean longitude in degrees
-    double mean_long;
+    double mean_long_deg;
     // Longitude of the periapsis in degrees
-    double long_perhelion;
+    double long_perhelion_deg;
     // Longitude of the ascending node in degrees
-    double long_ascending;
+    double long_ascending_deg;
 } orbit_params_t;
 
 /** Primary container with all data to calculate position and render a planet */
 typedef struct planet {
-    // color of the planet in 
+    // color of the planet
     color_t color;
     // Radius in km
-    double radius;
+    double radius_km;
     // Base orbital parameters
     orbit_params_t base;
     // Rate of change per century since J2000 of orbital parameters

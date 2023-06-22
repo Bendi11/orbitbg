@@ -31,12 +31,12 @@ typedef uint8_t planet_kind_t;
 
 typedef struct orbit_params {
     planet_kind_t planet;
-    double semi_major_axis;
+    double semi_major_axis_au;
     double eccentricity;
-    double inclination;
-    double mean_long;
-    double long_perhelion;
-    double long_ascending;
+    double inclination_rad;
+    double mean_long_deg;
+    double long_perhelion_deg;
+    double long_ascending_deg;
 } orbit_params_t;
 
 
@@ -75,17 +75,16 @@ double atand(double angle) {
     return atan(angle) * RADEG;
 }
 
-
 orbit_params_t apply_time(orbit_params_t orbit, orbit_params_t rates, double time) {
     double centuries = (time - J2000) / 36525.;
     return (orbit_params_t){
         .planet = orbit.planet,
-        .semi_major_axis = orbit.semi_major_axis + rates.semi_major_axis * centuries,
+        .semi_major_axis_au = orbit.semi_major_axis_au + rates.semi_major_axis_au * centuries,
         .eccentricity = orbit.eccentricity + rates.eccentricity * centuries,
-        .long_perhelion = orbit.long_perhelion + rates.long_perhelion * centuries,
-        .long_ascending = orbit.long_ascending + rates.long_ascending * centuries,
-        .mean_long = orbit.mean_long + rates.mean_long * centuries,
-        .inclination = orbit.inclination + rates.inclination * centuries,
+        .long_perhelion_deg = orbit.long_perhelion_deg + rates.long_perhelion_deg * centuries,
+        .long_ascending_deg = orbit.long_ascending_deg + rates.long_ascending_deg * centuries,
+        .mean_long_deg = orbit.mean_long_deg + rates.mean_long_deg * centuries,
+        .inclination_rad = orbit.inclination_rad + rates.inclination_rad * centuries,
     };
 }
 
@@ -142,7 +141,7 @@ void draw_planet(cairo_t *cr, orbit_params_t o_orbit, orbit_params_t rates, doub
 
     orbit_params_t orbit = apply_time(o_orbit, rates, time);
     
-    double mean_anomaly = orbit.mean_long - orbit.long_perhelion;
+    double mean_anomaly = orbit.mean_long_deg - orbit.long_perhelion_deg;
     mean_anomaly = fmod(mean_anomaly, 360.f);
     
     double estar = RADEG * orbit.eccentricity;
@@ -152,15 +151,15 @@ void draw_planet(cairo_t *cr, orbit_params_t o_orbit, orbit_params_t rates, doub
         eccentric_anomaly += dm / (1. - orbit.eccentricity * cosd(eccentric_anomaly));
     }
 
-    double x = orbit.semi_major_axis * (cosd(eccentric_anomaly) - orbit.eccentricity);
-    double y = ((orbit.semi_major_axis * sqrt(1. - orbit.eccentricity * orbit.eccentricity))) * sind(eccentric_anomaly);
+    double x = orbit.semi_major_axis_au * (cosd(eccentric_anomaly) - orbit.eccentricity);
+    double y = ((orbit.semi_major_axis_au * sqrt(1. - orbit.eccentricity * orbit.eccentricity))) * sind(eccentric_anomaly);
 
-    double c_w = cosd(orbit.long_perhelion);
-    double s_w = sind(orbit.long_perhelion);
-    double c_o = cosd(orbit.long_ascending);
-    double s_o = sind(orbit.long_ascending);
-    double c_i = cosd(orbit.inclination);
-    double s_i = sind(orbit.inclination);
+    double c_w = cosd(orbit.long_perhelion_deg);
+    double s_w = sind(orbit.long_perhelion_deg);
+    double c_o = cosd(orbit.long_ascending_deg);
+    double s_o = sind(orbit.long_ascending_deg);
+    double c_i = cosd(orbit.inclination_rad);
+    double s_i = sind(orbit.inclination_rad);
 
     double x_ecl = 
         (c_w*c_o - s_w*s_o*c_i) * x +
@@ -172,16 +171,16 @@ void draw_planet(cairo_t *cr, orbit_params_t o_orbit, orbit_params_t rates, doub
 
     double z_ecl = (s_w * s_i) * x + (c_w * s_i) * y;
 
-    x = cosd(-orbit.long_ascending) * x_ecl - sind(-orbit.long_ascending) * y_ecl;
-    y = sind(-orbit.long_ascending) * x_ecl + cosd(-orbit.long_ascending) * y_ecl;
+    x = cosd(-orbit.long_ascending_deg) * x_ecl - sind(-orbit.long_ascending_deg) * y_ecl;
+    y = sind(-orbit.long_ascending_deg) * x_ecl + cosd(-orbit.long_ascending_deg) * y_ecl;
 
     double angle = M_PI - atan2(y, x);
     
     cairo_save(cr);
 
-    cairo_rotate(cr, -(orbit.long_ascending) * DEGRAD);
+    cairo_rotate(cr, -(orbit.long_ascending_deg) * DEGRAD);
     cairo_translate(cr, x_ecl, y_ecl);
-    cairo_rotate(cr, (orbit.long_ascending) * DEGRAD);
+    cairo_rotate(cr, (orbit.long_ascending_deg) * DEGRAD);
     cairo_rotate(cr, -(angle + M_PI_2));
     cairo_planet_circle(cr, orbit.planet);
 
@@ -197,17 +196,17 @@ static double julian_date(time_t time) {
 void draw_orbit(cairo_t *cr, orbit_params_t orbit) {
     cairo_save(cr);
 
-    double semi_minor_axis = orbit.semi_major_axis * sqrt(1. - orbit.eccentricity * orbit.eccentricity);
-    double focus = (orbit.semi_major_axis * orbit.eccentricity);
+    double semi_minor_axis = orbit.semi_major_axis_au * sqrt(1. - orbit.eccentricity * orbit.eccentricity);
+    double focus = (orbit.semi_major_axis_au * orbit.eccentricity);
 
-    cairo_rotate(cr, orbit.long_perhelion * DEGRAD);
+    cairo_rotate(cr, orbit.long_perhelion_deg * DEGRAD);
     cairo_translate(cr, -focus, 0.);
     
     cairo_set_line_width(cr, 0.005);
     cairo_move_to(cr, 0., 0.);
     cairo_line_to(cr, semi_minor_axis, 0.);
 
-    cairo_scale(cr, orbit.semi_major_axis, semi_minor_axis);
+    cairo_scale(cr, orbit.semi_major_axis_au, semi_minor_axis);
 
     cairo_arc(cr, 0., 0., 1., 0., M_PI * 2. - 0.05);
 
