@@ -110,7 +110,6 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-
 static void cairo_reflect_y(cairo_t *cr) {
     cairo_matrix_t x_reflection_matrix;
     cairo_get_matrix(cr, &x_reflection_matrix);

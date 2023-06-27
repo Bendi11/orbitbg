@@ -60,6 +60,7 @@ void planet_draw_orbit(cairo_t *cr, orbit_params_t orbit) {
     cairo_save(cr);
         cairo_set_source_rgba(cr, COLOR_EXPAND(CONFIG.orbit_line_color));
         cairo_set_line_width(cr, CONFIG.orbit_line_width);
+        cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
         cairo_stroke(cr);
     cairo_restore(cr);
 }
