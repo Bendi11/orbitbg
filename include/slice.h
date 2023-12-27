@@ -13,5 +13,9 @@ typedef struct slice {
 /** @brief Create a new slice from a NULL-terminated string */
 slice_t slice_from_str(const char *str);
 
-static inline slice_t slice_sub(const slice_t slice, size_t begin, size_t len) { return (slice_t){ .ptr = slice.ptr + begin, .len = len }; }
-static inline slice_t slice_sub_rest(const slice_t slice, size_t begin) { return (slice_t){ .ptr = slice.ptr + begin, .len = slice.len - begin }; }
+static inline slice_t slice_sub(const slice_t slice, size_t begin, size_t len) {
+    return (slice_t){ .ptr = slice.ptr + begin, .len = len };
+}
+static inline slice_t slice_sub_rest(const slice_t slice, size_t begin) {
+    return (slice_t){ .ptr = slice.ptr + begin, .len = slice.len - begin };
+}

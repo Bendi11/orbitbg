@@ -9,15 +9,15 @@ static inline uint8_t hex_digit(char ch) {
     if(ch >= '0' && ch <= '9') { return ch - '0'; }
     else if(ch >= 'A' && ch <= 'F') { return ch - 'A' + 10; }
     else if(ch >= 'a' && ch <= 'f') { return ch - 'a' + 10; }
-    else { return 255; }
+    else { return 0; }
 }
 
 static color_parse_err_t hex_color_part(slice_t txt, float *v, slice_t *problem) {
-    uint8_t digit = hex_digit(txt.ptr[0]);
+    uint8_t digit = hex_digit(txt.ptr[1]);
     if(digit > 16) { *problem = txt; return COLOR_ERR_INVALID_HEX_DIGIT; }
 
     uint8_t color_value = digit;
-    digit = hex_digit(txt.ptr[1]);
+    digit = hex_digit(txt.ptr[0]);
     if(digit > 16) { *problem = txt; return COLOR_ERR_INVALID_HEX_DIGIT; }
     color_value |= digit << 4;
 
@@ -51,3 +51,4 @@ color_parse_err_t color_parse_hex(slice_t txt, color_t *const color, slice_t *pr
 
     return COLOR_SUCCESS;
 }
+

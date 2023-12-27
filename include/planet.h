@@ -1,6 +1,5 @@
 #pragma once
 
-#include "gfx.h"
 #include "mmath.h"
 #include <time.h>
 

@@ -2,7 +2,7 @@
 Description=Update dynamic solar system wallpaper daily
 
 [Timer]
-OnUnitActiveSec=1day
+OnCalendar=*-*-* *:00:00
 
 [Install]
 WantedBy=timers.target

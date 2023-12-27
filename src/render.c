@@ -14,21 +14,20 @@ void planet_draw(cairo_t *cr, const planet_t *planet, const planet_cfg_t *render
 
 void planet_draw_circle(cairo_t *cr, planet_t const *planet, planet_cfg_t const *render) {
     double radius = planet->radius_km * KM_TO_AU * PLANET_SCALE;
-    cairo_set_source_rgba(cr, COLOR_EXPAND(render->color));
-
     cairo_save(cr);
-        cairo_arc(cr, 0., 0., radius, 0., M_PI * 2.);
-        cairo_fill(cr);
-        cairo_set_source_rgba(cr, 0., 0., 0., 0.5);
+        cairo_set_source_rgba(cr, COLOR_EXPAND(render->palette[3]));
         cairo_arc(cr, 0., 0., radius, M_PI, M_PI * 2.);    
         cairo_fill(cr);
     cairo_restore(cr);
-    
+
+    cairo_set_source_rgba(cr, COLOR_EXPAND(render->palette[0]));
     cairo_save(cr);
         cairo_arc(cr, 0., 0., radius, 0., M_PI);
         cairo_fill(cr);
-        cairo_scale(cr, 1., 0.5);
-        cairo_arc_negative(cr, 0., 0., radius, 0., M_PI);
+        //cairo_translate(cr, 0., 0.003);
+        cairo_scale(cr, 0.95, 0.5);
+        cairo_arc(cr, 0., 0., radius, 0., M_PI * 2.f);
+        //cairo_arc_negative(cr, 0., 0., radius, M_PI - 0.000001, M_PI);
         cairo_fill(cr);
     cairo_restore(cr);
 }

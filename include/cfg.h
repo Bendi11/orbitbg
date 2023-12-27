@@ -3,8 +3,10 @@
 #include "gfx.h"
 #include "mmath.h"
 
+/** Theming data for a planet */
 typedef struct planet_cfg {
-    color_t color;
+    /** Color palette in descending brightness order */
+    color_t palette[4];
 } planet_cfg_t;
 
 /** Rendering configuration values */
@@ -22,26 +24,10 @@ typedef struct cfg {
 static const double SUN_SCALE = 40.;
 static const double PLANET_SCALE = 1E+3;
 
+/// Global configuration for rendering
 extern struct cfg CONFIG;
-static const struct cfg DEFAULT_CONFIG = {
-    .sun_scale = 40.,
-    /** Primary color that the sun emits according to its spectral class */
-    .sun_color = (color_t){1., 0.957, 0.918, 1.},
-    .sun_pos = (point_t){0.5, 0.52},
-    .planet_scale = 1E+3,
-    .background_color = (color_t){0.071, 0.071, 0.078, 1.},
-    .orbit_line_color = (color_t){1., 1., 1., 0.14},
-    .orbit_line_width = 0.005,
-    .mercury = {
-        .color = (color_t){0.608, 0.596, 0.631, 1.},
-    },
-    .venus = {
-        .color = (color_t){0.784, 0.616, 0.384, 1.},
-    },
-    .earth = {
-        .color = (color_t){0.231, 0.541, 0.769, 1.},
-    },
-    .mars = {
-        .color = (color_t){0.678, 0.384, 0.259, 1.},
-    }
-};
+
+
+/// Get the default configuration for planet color and size
+struct cfg default_config();
+

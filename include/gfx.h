@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdbool.h>
-#include <stdint.h>
 #include "slice.h"
 
 /** RGBA color collection */
@@ -29,5 +28,15 @@ color_parse_err_t color_parse_hex(slice_t txt, color_t *const color, slice_t *pr
 
 /** @brief Get a NULL-terimated character string for the given color parsing error */
 char const* color_parse_err_str(color_parse_err_t err);
+
+/** Color pallete used to render the planets */
+typedef struct theme {
+    color_t night[4];
+    color_t sol[4];
+    color_t mercury[4];
+    color_t venus[4];
+    color_t earth[4];
+    color_t mars[4];
+} theme_t;
 
 #define COLOR_EXPAND(color) (color).r, (color).g, (color).b, (color).a

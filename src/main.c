@@ -2,7 +2,6 @@
 #include <cairo/cairo.h>
 #include <cairo/cairo-xlib.h>
 #include <X11/Xlib.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -28,7 +27,7 @@ int error_handler(Display *dsp, XErrorEvent *ev) {
 static void cairo_reflect_y(cairo_t *cr);
 
 int main(int argc, char *argv[]) {
-    CONFIG = DEFAULT_CONFIG;
+    CONFIG = default_config();
     time_t timer = time(NULL);
     double time = julian_time(timer);
 
