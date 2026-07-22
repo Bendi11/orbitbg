@@ -1,5 +1,5 @@
 pkgname='orbitbg'
-pkgver='0.1.0'
+pkgver='0.2.0'
 pkgrel='1'
 
 pkgdesc="Dynamic material-style solar system background for X11"

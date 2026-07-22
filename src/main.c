@@ -39,7 +39,11 @@ int main(int argc, char *argv[]) {
         exit(255);
     }
     
+
     Screen *screen = XDefaultScreenOfDisplay(dsp);
+
+    GC gc = XDefaultGCOfScreen(screen);
+    XSetForeground(dsp, gc, 0x0);
     Window win = XRootWindowOfScreen(screen);
     
     XWindowAttributes attribs;
@@ -70,6 +74,14 @@ int main(int argc, char *argv[]) {
         mars = orbit_params_time(&MARS, time);
     
     cairo_save(cr);
+        cairo_set_source_rgb(
+            cr,
+            CONFIG.background_color.r,
+            CONFIG.background_color.g,
+            CONFIG.background_color.b
+        );
+        cairo_paint(cr);
+
         cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
 
         planet_draw_orbit(cr, mercury);
@@ -77,9 +89,6 @@ int main(int argc, char *argv[]) {
         planet_draw_orbit(cr, earth);
         planet_draw_orbit(cr, mars);
 
-        cairo_set_source_rgba(cr, COLOR_EXPAND(CONFIG.background_color));
-        cairo_set_operator(cr, CAIRO_OPERATOR_ADD);
-        cairo_paint(cr);
     cairo_restore(cr);
 
     cairo_save(cr);
@@ -102,6 +111,8 @@ int main(int argc, char *argv[]) {
 
     XFlush(dsp);
     XSync(dsp, False);
+
+    XCloseDisplay(dsp);
 
     XKillClient(dsp, AllTemporary);
     XSetCloseDownMode(dsp, RetainTemporary);

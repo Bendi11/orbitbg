@@ -1,5 +1,6 @@
 #include "gfx.h"
 #include "slice.h"
+#include <stdint.h>
 
 /** 
  * @brief Get the value of a single ASCII hexadecimal character 
